@@ -42,8 +42,16 @@ function App() {
     setTodo(newTodos);
   };
 
+  const update = (id, val) => {
+    let newTodos = [...todo];
+    let index = newTodos.findIndex((item) => item.id === id);
+    newTodos[index] = { id: id, text: val, checked: false };
+    setTodo(newTodos);
+    getTodoList();
+  };
+
   let todos = todo.map((item) => (
-    <Todo data={item} key={item.id} deleteTodo={deleteTodo} />
+    <Todo data={item} key={item.id} deleteTodo={deleteTodo} update={update} />
   ));
 
   let addTodo = (value) => {
@@ -65,26 +73,28 @@ function App() {
   }, [todo]);
 
   return (
-    <div className="container">
-      <h1>Todo list</h1>
-      <Form
-        onSubmit={(e) => {
-          e.preventDefault();
-          // console.log(e.target.todo.value);
-          addTodo(e.target.todo.value);
-        }}>
-        <Form.Group className="mb-3" controlId="todo">
-          <Form.Label>Todo Input</Form.Label>
-          <Form.Control
-            type="text"
-            name="todo"
-            placeholder="할일을 입력하세요"
-          />
-        </Form.Group>
-      </Form>
-      <hr />
-      <div>{todos}</div>
-    </div>
+    <>
+      <div className="container">
+        <h1>Todo list</h1>
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+            // console.log(e.target.todo.value);
+            addTodo(e.target.todo.value);
+          }}>
+          <Form.Group className="mb-3" controlId="todo">
+            <Form.Label>Todo Input</Form.Label>
+            <Form.Control
+              type="text"
+              name="todo"
+              placeholder="할일을 입력하세요"
+            />
+          </Form.Group>
+        </Form>
+        <hr />
+        <div>{todos}</div>
+      </div>
+    </>
   );
 }
 

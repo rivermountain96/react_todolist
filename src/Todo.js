@@ -1,9 +1,19 @@
 import React, { useState } from "react";
+import Form from "react-bootstrap/Form";
 
-const Todo = ({ data, deleteTodo }) => {
+const Todo = ({ data, deleteTodo, update }) => {
+  const [mode, setMode] = useState("read");
   const [ischecked, setIschecked] = useState(false);
+  const [text, setText] = useState(data.text);
 
   let className = "form-check-label";
+  let formClass = "hidden";
+
+  if (mode === "edit") {
+    className += " hidden";
+    formClass = "";
+  }
+
   let deco = {};
   if (ischecked) {
     className += " text-muted";
@@ -17,6 +27,20 @@ const Todo = ({ data, deleteTodo }) => {
   const todoDelete = () => {
     deleteTodo(data.id);
   };
+  const todoEdit = () => {
+    setMode("edit");
+  };
+  const handleEdit = (val) => {
+    setText(val);
+    console.log(text);
+  };
+  const changeMode = (val) => {
+    setMode(val);
+  };
+
+  const updateTodo = () => {
+    update(data.id, text);
+  };
 
   return (
     <div className="form-check">
@@ -28,13 +52,38 @@ const Todo = ({ data, deleteTodo }) => {
         onChange={handleCheckboxClick}
       />
       <label className={className} style={deco} htmlFor={`todo${data.id}`}>
-        {data.text}
+        {text}
       </label>
+      <form className={formClass} onSubmit={update}>
+        <input
+          className="form-control"
+          type={"text"}
+          value={text}
+          onChange={(e) => {
+            handleEdit(e.target.value);
+            //console.log(text);
+          }}
+        />
+        <button type="submit" className="btn btn-secondary btn-sm">
+          Update
+        </button>
+        <button
+          type="button"
+          className="btn btn-secondary btn-sm"
+          onClick={() => {
+            changeMode("read");
+          }}>
+          cancel
+        </button>
+      </form>
       <button
         type="button"
         className="btn btn-danger btn-sm"
         onClick={todoDelete}>
-        X
+        Delete
+      </button>
+      <button type="button" className="btn btn-info btn-sm" onClick={todoEdit}>
+        Edit
       </button>
     </div>
   );
